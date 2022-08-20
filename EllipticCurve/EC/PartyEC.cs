@@ -8,7 +8,7 @@ namespace EllipticCurve.EC
     /// <summary>
     /// Party (or side) of DH key exchange protocol.
     /// </summary>
-    public class PartyEC
+    public partial class PartyEC
     {
         /// <summary>
         /// Elliptic curve гув in DH exchange protocol.
@@ -62,7 +62,8 @@ namespace EllipticCurve.EC
                 generator.GetBytes(randomBytes);
 
                 BigInteger randomValue = new BigInteger(randomBytes);
-                PrivateKey = (randomValue % Curve.N);
+                randomValue = randomValue > 0 ? randomValue : -randomValue;
+                PrivateKey = randomValue % Curve.N;
             }
             while (PrivateKey == 0);
 
@@ -156,6 +157,11 @@ namespace EllipticCurve.EC
         /// <returns>Is the signature correct.</returns>
         public bool ECDSAVerification((BigInteger r, BigInteger s) signature, Curve curve, Point publicKeyPoint, BigInteger message)
         {
+            if (curve is null)
+            {
+                throw new ArgumentNullException(nameof(curve));
+            }
+
             // verification that curvePoint is a valid curve point.
             if (Point.IsInfinityPoint(publicKeyPoint))
             {

@@ -40,6 +40,21 @@ namespace EllipticCurve
             Console.WriteLine($"Is it correct for another message? {daniel.ECDSAVerification(signature, curve, carrol.PublicKey, message)}");
 
 
+            //SchnorrEC
+            Console.WriteLine("\n\nSchnorr EC scheme");
+            PartyEC eva = new PartyEC(curve);
+            PartyEC fox = new PartyEC(curve);
+            eva.GeneratePairOfKeys();
+            message = 123456789;
+
+            var schnorrECSignature = eva.SchnorrECGeneration(message);
+            Console.WriteLine($"SchnorrEC signature for message \'{message}\': " + schnorrECSignature);
+            Console.WriteLine($"\nIs SсhnorrEC signature correct? {fox.SchnorrECVerification(schnorrECSignature, curve, eva.PublicKey, message)}");
+
+            message = 987654321;
+            Console.WriteLine($"Is it correct for another message? {fox.SchnorrECVerification(schnorrECSignature, curve, eva.PublicKey, message)}");
+
+
             // Schnorr
             Console.WriteLine("\n\nSchnorr scheme");
             SchnorrScheme scheme = new SchnorrScheme();
